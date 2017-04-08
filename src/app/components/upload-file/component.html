@@ -1,0 +1,16 @@
+<div class='alert alert-info text-center'>
+    <h2>Upload a new file component</h2>
+    <br>
+
+    <form class="form-inline">
+      <div class="form-group">
+        <label for="uploadFile">Upload file</label>
+        <input type="file" class="form-control" id="uploadFile" (change)="fileChangeEvent($event)">
+      </div>
+      <button type="submit" class="btn btn-default" (click)="uploadFile()">Upload</button>
+    </form>
+
+<p>Value:</p>
+<pre>{{ fileInput | json }}</pre>
+
+</div>
