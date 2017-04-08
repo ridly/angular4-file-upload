@@ -1,33 +1,37 @@
 import { Component } from '@angular/core';
-import { AmazonSecrets } from '../../../amazon-secrets';
+import { BaseComponent } from '../base-component';
 
-declare var require: any
-require('aws-sdk/dist/aws-sdk');
 
 @Component({
   selector: 'upload-file',
   templateUrl: './component.html',
   styleUrls: ['./component.css']
 })
-export class UploadFileComponent {
-    private file;
+export class UploadFileComponent extends BaseComponent {
+    private file             : any = null;
+    private uploadFailed     : boolean = false;
+    private uploadSuccessful : boolean = false;
 
-    private uploadFile(component) {
-
-        const AWSService = window.AWS;
-
-        AWSService.config.accessKeyId = AmazonSecrets.accessKeyId;
-        AWSService.config.secretAccessKey = AmazonSecrets.secretAccessKey;
-
-        const bucket = new AWSService.S3({params: { Bucket: AmazonSecrets.bucketName }});
+    public uploadFile() {
+        if (!this.file) {
+            return;
+        }
+        this.loading = true;
         const params = { Key: this.file.name, Body: this.file };
-
-        bucket.upload(params, (err, data) => {
-            console.log(err, data);
+        this.S3Bucket.upload(params, (err, data) => {
+            this.loading = false;
+            if(err) {
+                this.uploadFailed = true;
+                console.error(err);
+            } else {
+                this.uploadSuccessful = true;
+            }
         });
     }
 
-    private fileChangeEvent(event) {
-        this.file = event.target.files[0];
+    public fileChangeEvent(event) {
+        this.uploadFailed     = false;
+        this.uploadSuccessful = false;
+        this.file             = event.target.files[0];
     }
 }
