@@ -2,6 +2,20 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.0.0.
 
+## Configuring Amazon S3 bucket
+
+The configuration file for the AWS bucket is in `src` folder named `amazon-secrets.ts`.
+The file content should look like:
+```typescript
+export class AmazonSecrets {
+    public static accessKeyId     = 'access key';
+    public static secretAccessKey = 'secret access key';
+    public static bucketName      = 'bucket name';
+    public static region          = 'aws region where the S3 is deployed';
+};
+```
+For obvious reason this file is not committed to the repository and needs to be added manually.
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
