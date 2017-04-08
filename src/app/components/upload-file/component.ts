@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import {FormGroup, FormBuilder} from '@angular/forms';
+import { AmazonSecrets } from '../../../amazon-secrets';
+
+declare var require: any
+require('aws-sdk/dist/aws-sdk');
 
 @Component({
   selector: 'upload-file',
@@ -7,13 +10,24 @@ import {FormGroup, FormBuilder} from '@angular/forms';
   styleUrls: ['./component.css']
 })
 export class UploadFileComponent {
-    private fileInput;
+    private file;
 
     private uploadFile(component) {
-        console.log('Upload file', this.fileInput);
+
+        const AWSService = window.AWS;
+
+        AWSService.config.accessKeyId = AmazonSecrets.accessKeyId;
+        AWSService.config.secretAccessKey = AmazonSecrets.secretAccessKey;
+
+        const bucket = new AWSService.S3({params: { Bucket: AmazonSecrets.bucketName }});
+        const params = { Key: this.file.name, Body: this.file };
+
+        bucket.upload(params, (err, data) => {
+            console.log(err, data);
+        });
     }
 
     private fileChangeEvent(event) {
-        console.log('Event', event.srcElement.files);
+        this.file = event.target.files[0];
     }
 }
